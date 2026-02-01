@@ -1,0 +1,118 @@
+Design a complete, modern, dark-themed user interface for a multi-user AI-powered document question answering system.
+
+Project name: DocMind – AI Document Intelligence Platform
+
+TECH CONTEXT:
+- Frontend: PHP + Bootstrap
+- Backend: Python (Streamlit, LangChain, ChromaDB)
+- Database: MySQL
+- Authentication: Email OTP verification
+- Style: Dark theme, modern, smooth animations
+
+GENERAL UI THEME:
+- Dark background (#0f172a / #020617)
+- Accent colors: Electric blue (#38bdf8), Violet (#8b5cf6), Neon green (#22c55e)
+- Glassmorphism cards with blur
+- Rounded corners (16px+)
+- Soft shadows and glow effects
+- Smooth hover, fade, slide and scale animations
+- Modern typography (Inter / Poppins)
+
+MODULES & SCREENS TO DESIGN:
+
+1. LANDING PAGE
+- Hero section with animated gradient background
+- Tagline: “Chat with Your Documents. Secure. Intelligent. Fast.”
+- Call-to-action buttons: Login | Sign Up
+- Animated illustration showing PDF → AI → Answer
+- Smooth scroll effects
+
+2. SIGN UP PAGE
+- Dark glassmorphism card centered
+- Fields: Name, Email, Password
+- Button: “Send OTP”
+- Loading animation when OTP is sent
+- Subtle glowing input focus
+
+3. OTP VERIFICATION PAGE
+- 6-digit OTP input with auto-focus animation
+- Countdown timer (5 minutes)
+- Resend OTP button with hover glow
+- Success animation on verification
+
+4. LOGIN PAGE
+- Email + Password
+- Login button with ripple effect
+- Error animation for wrong credentials
+- Message if email not verified
+
+5. USER DASHBOARD
+- Sidebar navigation with icons:
+  - Dashboard
+  - Upload Document
+  - Chat with Document
+  - History
+  - Profile
+  - Logout
+- Animated sidebar expand/collapse
+- Welcome message with user name
+- Stats cards:
+  - Total documents uploaded
+  - Total questions asked
+  - Last activity
+
+6. DOCUMENT UPLOAD PAGE
+- Drag-and-drop PDF upload zone
+- Animated progress bar
+- File preview with name and size
+- Upload success animation
+- List of uploaded documents (card layout)
+
+7. CHAT WITH DOCUMENT PAGE
+- WhatsApp-style chat UI (dark)
+- User messages right aligned
+- AI messages left aligned with glow border
+- Typing indicator animation
+- “Source page number” shown below answers
+- Input box with send icon animation
+
+8. CHAT HISTORY PAGE
+- Table or cards showing:
+  - Document name
+  - Question
+  - Timestamp
+- Click to reopen past chats
+- Smooth expand animation
+
+9. PROFILE PAGE
+- User details
+- Email verified badge (green)
+- Change password option
+- Clean minimal layout
+
+10. DATABASE / ADMIN VIEW (UI ONLY)
+- Visual schema representation:
+  - users table
+  - documents table
+  - chat_history table
+- Animated relationship lines
+- Dark-themed data tables
+- Read-only design (for demo/admin)
+
+ANIMATIONS & INTERACTIONS:
+- Page transitions (fade + slide)
+- Button hover glow
+- Card lift on hover
+- Loading skeletons
+- Toast notifications (success/error)
+
+RESPONSIVENESS:
+- Fully responsive for desktop, tablet, mobile
+- Sidebar collapses on mobile
+- Chat UI adapts to small screens
+
+DELIVERABLE:
+- Generate full UI layout
+- Use clean, reusable components
+- Maintain consistent color and animation style
+- Focus on premium, production-grade look suitable for final year project demo
