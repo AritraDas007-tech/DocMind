@@ -6,6 +6,7 @@ import { scrypt, randomBytes, timingSafeEqual } from "crypto";
 import { promisify } from "util";
 import { storage } from "./storage";
 import type { User } from "@shared/schema";
+import { sendOtpEmail } from "./mailer";
 
 const scryptAsync = promisify(scrypt);
 
@@ -27,7 +28,7 @@ async function comparePasswords(supplied: string, stored: string) {
 /* ================= AUTH SETUP ================= */
 
 export function setupAuth(app: Express) {
-  // ✅ MySQL-safe session config (NO Postgres store)
+  /* ---------- SESSION (MySQL-safe) ---------- */
   app.use(
     session({
       secret: process.env.SESSION_SECRET || "docmind_dev_secret",
@@ -39,7 +40,7 @@ export function setupAuth(app: Express) {
   app.use(passport.initialize());
   app.use(passport.session());
 
-  /* ================= PASSPORT STRATEGY ================= */
+  /* ---------- PASSPORT STRATEGY ---------- */
 
   passport.use(
     new LocalStrategy(
@@ -79,7 +80,7 @@ export function setupAuth(app: Express) {
 
   /* ================= ROUTES ================= */
 
-  // 🔹 SIGNUP
+  /* ---------- SIGNUP ---------- */
   app.post("/api/auth/signup", async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { email, password, name } = req.body;
@@ -93,6 +94,7 @@ export function setupAuth(app: Express) {
         return res.status(400).json({ message: "Email already exists" });
       }
 
+      const otp = Math.floor(100000 + Math.random() * 900000).toString();
       const hashedPassword = await hashPassword(password);
 
       const user = await storage.createUser({
@@ -100,16 +102,16 @@ export function setupAuth(app: Express) {
         password: hashedPassword,
         name,
         isVerified: false,
-        otp: Math.floor(100000 + Math.random() * 900000).toString(), // demo OTP
+        otp,
       });
 
-      // Demo OTP logging (for college project)
-      console.log(`[OTP DEMO] OTP for ${user.email}: ${user.otp}`);
+      // ✅ SEND REAL EMAIL OTP
+      await sendOtpEmail(user.email, otp);
 
       req.login(user, (err) => {
         if (err) return next(err);
         res.status(201).json({
-          message: "User created. OTP sent.",
+          message: "OTP sent to your email. Please verify.",
           email: user.email,
         });
       });
@@ -118,7 +120,7 @@ export function setupAuth(app: Express) {
     }
   });
 
-  // 🔹 LOGIN
+  /* ---------- LOGIN ---------- */
   app.post("/api/auth/login", (req, res, next) => {
     passport.authenticate("local", (err, user, info) => {
       if (err) return next(err);
@@ -141,7 +143,7 @@ export function setupAuth(app: Express) {
     })(req, res, next);
   });
 
-  // 🔹 VERIFY OTP
+  /* ---------- VERIFY OTP ---------- */
   app.post("/api/auth/verify-otp", async (req, res) => {
     if (!req.isAuthenticated()) {
       return res.status(401).json({ message: "Not authenticated" });
@@ -150,15 +152,19 @@ export function setupAuth(app: Express) {
     const { otp } = req.body;
     const user = req.user as User;
 
-    if (user.otp === otp || otp === "123456") {
+    if (!otp) {
+      return res.status(400).json({ message: "OTP is required" });
+    }
+
+    if (user.otp === otp) {
       await storage.verifyUser(user.id);
-      res.json({ message: "Account verified" });
+      res.json({ message: "Email verified successfully" });
     } else {
       res.status(400).json({ message: "Invalid OTP" });
     }
   });
 
-  // 🔹 LOGOUT
+  /* ---------- LOGOUT ---------- */
   app.post("/api/auth/logout", (req, res, next) => {
     req.logout((err) => {
       if (err) return next(err);
@@ -166,7 +172,7 @@ export function setupAuth(app: Express) {
     });
   });
 
-  // 🔹 CURRENT USER
+  /* ---------- CURRENT USER ---------- */
   app.get("/api/auth/me", (req, res) => {
     if (!req.isAuthenticated()) {
       return res.status(401).send();
