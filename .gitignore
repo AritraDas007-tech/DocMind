@@ -1,0 +1,31 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+.vite/
+
+# Environment variables
+.env
+
+# OS files
+.DS_Store
+
+# Archives
+*.tar.gz
+
+# Runtime / local folders
+.local/
+server/public/
+chroma_db/
+uploads/
+*.log
+output.json
+
+# Maintenance scripts
+diagnose_db.ts
+final_fix_db.ts
+fix_schema.ts
+hard_reset_db.ts
+ultra_fix.ts
+test_env.py
